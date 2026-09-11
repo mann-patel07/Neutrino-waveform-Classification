@@ -1,23 +1,24 @@
 # Neutrino Waveform Classification
 
 PyTorch CNN and regression networks for classifying and analyzing physics detector waveform data.
- 
- ## What this is
 
- This is my final project for PHYS 41 (Scientific Computing in Python) at UC San Diego.
+## What this is
 
- ## What I built
+This is my final project for PHYS 41 (Scientific Computing in Python) at UC San Diego.
 
-- A PyTorch 'Dataset' class to load and normalize raw waveform signals with each one having 3,800 data points
-- A 1D CNN that classifies whether a waveform looks like signal or background - got this one as an ROC AUC score of 0.856
-- A separate regression network that predicts the energy of each event - got this one as a cosine similarity score of 0.86 between the predicted and true energy distributions
+## What I built
+
+- A PyTorch `Dataset` class to load and normalize raw waveform signals, each one 3,800 data points long
+- A 1D CNN that classifies whether a waveform looks like signal or background — ROC AUC score of 0.856
+- A separate regression network that predicts the energy of each event — cosine similarity score of 0.87 between the predicted and true energy distributions
 
 ## Tools
 
 PyTorch, NumPy, Matplotlib, scikit-learn
 
-## Note
+## Notes and known limitations
 
-- Real detector data is noisy, so getting the normalization correct was actually more important than I thought going into it. Batch nornalization helped a lot with the classifiation model but apparently taking it out improved the regression model instead. It was a good exercise in seeing how the same data needs different handling based on if it is used for classifying or predicting a value.
-- The dataset paths point to UCSD's internal Data Hub, so this won't run the same outside that environment.
-
+- Real detector data is noisy, so getting the normalization correct was more important than I expected going in. Batch normalization helped a lot with the classification model, but removing it actually improved the regression model instead — a good example of how the same data needs different handling depending on whether it's used for classifying or predicting a value.
+- Normalization stats (mean/std) are currently computed per-dataset rather than fit on training data and applied to test — a cleaner version would fix this so the test set isn't normalized using its own statistics.
+- Training loss is noisy, especially for the regression model in later epochs (it spikes well above its typical range around epoch 27–28 of 30 before settling). There's no validation-based checkpointing, so the reported metric reflects whatever the final epoch produced. A cleaner version would add learning-rate scheduling and checkpoint on a validation metric instead.
+- The dataset paths point to UCSD's internal Data Hub and won't resolve outside that environment. That environment's course data has since been decommissioned, so this notebook can no longer be re-run or re-verified — the results and outputs reflect the original run made while the data was available.
